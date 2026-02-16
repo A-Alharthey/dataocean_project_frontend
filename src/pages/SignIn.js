@@ -1,13 +1,16 @@
 import { Box, Container, Paper, Card, CardContent, CardMedia, Typography, TextField, Alert, Avatar, SvgIcon, Button, Divider, Link, useTheme} from '@mui/material';
 import useMediaQuery from '@mui/material/useMediaQuery';
+import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { ToastContainer } from 'react-toastify';
 function SignIn() {
   const theme = useTheme()
   const matches= useMediaQuery(theme.breakpoints.up("md"))
+  const navigate = useNavigate()
   const [username,setUsername]=useState("")
   const [password,setPassword]=useState("")
   const [errors,setErrors]=useState({username:"",password:""})
+  const [isLoading,setIsLoading] = useState(false)
   function handleSignIn(e){
     if (checkError(e)){
       return
@@ -20,7 +23,12 @@ function SignIn() {
         "Accept":"application/json"
       }
     }
-    fetch("http://92.205.234.30:7071/api/Login",config).then((res)=>res.json()).then((data)=>{console.log(data)}).catch((e)=>alert("something went wrong!"))
+    setIsLoading(true)
+    fetch("http://92.205.234.30:7071/api/Login",config).then((res)=>res.json()).then((data)=>{
+      window.localStorage.setItem("token",data.token)
+      navigate("/dashboard")
+    }).catch((e)=>alert("something went wrong!")).finally(()=>setIsLoading(false))
+
   }
   function checkError(e){
     const elementName= e.target.id
@@ -31,12 +39,14 @@ function SignIn() {
         temp.username = "username is required"
         isError=true
       }
+      else temp.username = ""
     }
     if (elementName === "password" || elementName === "submit"){
       if(password.trim() === ""){
         temp.password = "password is required"
         isError=true
       }
+      else temp.password = ""
     }
     setErrors(temp)
     return isError
@@ -58,7 +68,7 @@ function SignIn() {
             </Paper>
             <TextField onChange={e=>setUsername(e.target.value)} id="username" label="User Name" variant='outlined' color='primary' sx={{ marginBottom: "20px" }} helperText={errors.username} error={Boolean(errors.username)} onBlur={(e)=>checkError(e)}></TextField>
             <TextField onChange={e=>setPassword(e.target.value)} id="password" label="Password" variant='outlined' color='primary' type='password' onBlur={(e)=>checkError(e)} helperText={errors.password} error={Boolean(errors.password)}></TextField>
-            <Button onClick={(e)=>handleSignIn(e)} id="submit" variant='contained' size='large' sx={{ marginY: "20px", fontSize: "0.9375rem", fontFamily: "Roboto, Helvetica, Arial, sans-serif" }}>LOG IN</Button>
+            <Button onClick={(e)=>handleSignIn(e)} id="submit" variant='contained' size='large' sx={{ marginY: "20px", fontSize: "0.9375rem", fontFamily: "Roboto, Helvetica, Arial, sans-serif", }} loading={isLoading}>LOG IN</Button>
             <Divider />
             <Typography color='primary' sx={{ marginTop: "20px" }}>
               <Link underline='hover' href='/forgetpassword'>Forget Password</Link>
