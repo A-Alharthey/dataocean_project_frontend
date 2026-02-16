@@ -2,8 +2,10 @@ import { AppBar, Avatar, Box, Button, Collapse, Container, Drawer, IconButton, L
 import { useState } from "react";
 import ExpandLess from '@mui/icons-material/ExpandLess'
 import ExpandMore from '@mui/icons-material/ExpandMore'
+import { useNavigate } from "react-router-dom";
 function DashboardLayout() {
     const [showMoreElement, setShowMoreElement] = useState({})
+    const navigate = useNavigate()
     //save the id of the element that is clicked in the showMoreElement state and toggle it on click
     function handleShowMore(e) {
         const elementId = e.currentTarget.id
@@ -65,7 +67,7 @@ function DashboardLayout() {
             <Drawer anchor="left" variant="permanent" sx={{ "& .MuiDrawer-paper": { bgcolor: "#313439", top: "64px", width: "256px", height: "calc(100% - 64px)" } }}>
                 <List>
                     <ListItem>
-                        <ListItemButton id="dashboardSettings" selected>
+                        <ListItemButton id="dashboardSettings" onClick={()=>navigate("/dashboard")}>
                             <ListItemText primary="Dashboard Settings" />
                         </ListItemButton>
                     </ListItem>
@@ -107,10 +109,10 @@ function DashboardLayout() {
                             </ListItemButton>
                             <Collapse in={showMoreElement["transactions"]} timeout="auto">
                                 <List sx={{ pl: 4 }}>
-                                    <ListItemButton>
+                                    <ListItemButton onClick={()=>navigate("/transactions/workorder")}>
                                         <ListItemText primary="Work Orders" />
                                     </ListItemButton>
-                                    <ListItemButton>
+                                    <ListItemButton onClick={()=>navigate("/transactions/technicianservices")}>
                                         <ListItemText primary="Technician Services" />
                                     </ListItemButton>
                                 </List>
