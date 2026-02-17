@@ -5,12 +5,14 @@ import SignIn from './pages/SignIn';
 import { ThemeProvider,createTheme } from '@mui/material';
 import Dashboard from './pages/Dashboard';
 import TechnicianServices from './pages/TechnicianServices';
-import WorkOrder from './pages/WorkOrder'
+import WorkOrder from './pages/WorkOrder';
+import WorkOrderDetails from './pages/WorkOrderDetails';
 const router = createBrowserRouter([
   {path:"/",element:<SignIn/>},
   {path:"/dashboard",element:<Dashboard/>},
   {path:"/transactions/workorder", element:<WorkOrder/>},
-  {path:"/transactions/technicianservices", element:<TechnicianServices/>}
+  {path:"/transactions/technicianservices", element:<TechnicianServices/>},
+  {path:"/transactions/workorder/:id", element:<WorkOrderDetails/>}
 ])
 const theme = createTheme({
   palette:{
