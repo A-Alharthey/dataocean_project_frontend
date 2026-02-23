@@ -18,7 +18,7 @@ function WorkOrderDetails() {
                         <Button variant="contained">Print</Button>
                     </Grid>
                 </Grid>
-                <Accordion sx={{ bgcolor: "#313439", width: "100%", marginTop: "20px" }}>
+                <Accordion defaultExpanded sx={{ bgcolor: "#313439", width: "100%", marginTop: "20px" }}>
                     <AccordionSummary expandIcon={<ExpandMore />}>
                         <Typography variant="h6" color="textPrimary">Main Data</Typography>
                     </AccordionSummary>
