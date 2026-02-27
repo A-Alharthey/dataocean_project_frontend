@@ -66,7 +66,6 @@ function WorkOrder() {
             <DashboardLayout />
             <Box sx={{ overflowY: "scroll", overflowX: "hidden", width: "100%", marginTop: "64px", marginLeft: "256px", padding: "20px", paddingTop: "50px", paddingBottom: "50px" }}>
                 <Grid container>
-                    {/* TODO fix autocomplete fields not working with filter */}
                     <Accordion sx={{ bgcolor: "#313439", borderRadius: "10px", width: "100%" }}>
                         <AccordionSummary expandIcon={<ExpandMore />}>
                             <Typography variant="h5" color="textPrimary">Filter</Typography>
