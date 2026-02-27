@@ -25,6 +25,7 @@ function WorkOrderDetails() {
     }
     useEffect(() => {
         getLocations()
+        getStatuses()
     }, [])
     useEffect(() => {
         if (formData.locationId) {
@@ -99,7 +100,7 @@ function WorkOrderDetails() {
         const data = JSON.parse(textData)
         setSuggestions((prev) => ({ ...prev, [elementName]: data.list }))
     }
-    async function  getPrioritiesByAsset(elementName) {
+    async function getPrioritiesByAsset(elementName) {
         if (!formData.assetItemId) return
         setIsLoading((prev) => ({ ...prev, [elementName]: true }))
         const result = await fetch(`http://92.205.234.30:7071/api/WorkOrder/GetPrioritiesByAsset?formid=903005&assetItemId=${formData.assetItemId}`, config).finally(() => setIsLoading((prev) => ({ ...prev, [elementName]: false })))
@@ -116,6 +117,7 @@ function WorkOrderDetails() {
         setSuggestions((prev) => ({ ...prev, [elementName]: data.list }))
     }
     async function getStatuses() {
+        if (suggestions.statusId) return
         setIsLoading((prev) => ({ ...prev, statusId: true }))
         const result = await fetch(`http://92.205.234.30:7071/api/WorkOrder/GetMNTWorkOrderStatuses`, config).finally(() => setIsLoading((prev) => ({ ...prev, statusId: false })))
         if (!result.ok) {
@@ -258,7 +260,7 @@ function WorkOrderDetails() {
                                 />
                             </Grid>
                             <Grid item size={{ xs: 4 }}>
-                                <Autocomplete disabled={formData.disableWOAssets} variant="outlined" sx={{ width: "100%" }} onChange={(event, value) => { setFormData((prev) => ({ ...prev, priorityId: value.ID })) }} value={suggestions.priorityId?.find((item) => {console.log("Looking for priorityId:", formData.priorityId, "Found item:", item);return item.ID === formData.priorityId}) || null} options={suggestions.priorityId || []} getOptionLabel={(option) => option.priorityName || ""} fullWidth renderInput={(params) => (
+                                <Autocomplete disabled={formData.disableWOAssets} variant="outlined" sx={{ width: "100%" }} onChange={(event, value) => { setFormData((prev) => ({ ...prev, priorityId: value.ID })) }} value={suggestions.priorityId?.find((item) => { console.log("Looking for priorityId:", formData.priorityId, "Found item:", item); return item.ID === formData.priorityId }) || null} options={suggestions.priorityId || []} getOptionLabel={(option) => option.priorityName || ""} fullWidth renderInput={(params) => (
                                     <TextField onClick={() => getPrioritiesByAsset("priorityId")} label="Priority" {...params} slotProps={{
                                         input: {
                                             ...params.InputProps,
@@ -273,7 +275,7 @@ function WorkOrderDetails() {
                                 />
                             </Grid>
                             <Grid item size={{ xs: 4 }}>
-                                <Autocomplete variant="outlined" sx={{ width: "100%" }} onChange={(event, value) => { setFormData((prev) => ({ ...prev, statusId: value.ID })) }} value={suggestions.statusId?.find((item) => item.ID === formData.statusId) || null} options={suggestions.statusId || []} getOptionLabel={(option) => option.StatusName || ""} fullWidth renderInput={(params) => (
+                                <Autocomplete disableClearable variant="outlined" sx={{ width: "100%" }} onChange={(event, value) => { setFormData((prev) => ({ ...prev, statusId: value.ID })) }} value={suggestions.statusId?.find((item) => item.ID === formData.statusId) || null} options={suggestions.statusId || []} getOptionLabel={(option) => option.StatusName || ""} fullWidth renderInput={(params) => (
                                     <TextField onClick={() => getStatuses()} label="Status" {...params} slotProps={{
                                         input: {
                                             ...params.InputProps,
@@ -288,22 +290,26 @@ function WorkOrderDetails() {
                                 />
                             </Grid>
                             <Grid item size={{ xs: 4 }}>
-                                <TextField label="Completed Date" variant="outlined" fullWidth />
+                                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                    <DatePicker disabled value={formData.completedDate} onChange={(newValue) => setFormData((prev) => ({ ...prev, completedDate: newValue }))} label="Completed Date" variant="outlined" sx={{ width: "100%" }} />
+                                </LocalizationProvider>
                             </Grid>
                             <Grid item size={{ xs: 4 }}>
-                                <TextField label="Closed Date" variant="outlined" fullWidth />
+                                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                    <DatePicker disabled value={formData.closedDate} onChange={(event, value) => { setFormData((prev) => ({ ...prev, closedDate: value })) }} label="Closed Date" variant="outlined" sx={{ width: "100%" }} />
+                                </LocalizationProvider>
                             </Grid>
                             <Grid item size={{ xs: 4 }}>
-                                <TextField label="Reference Number1" variant="outlined" fullWidth />
+                                <TextField onChange={(e)=>setFormData((prev) => ({ ...prev, referenceNumber1: e.target.value }))} value={formData.referenceNumber1 || ""} label="Reference Number1" variant="outlined" fullWidth />
                             </Grid>
                             <Grid item size={{ xs: 4 }}>
-                                <TextField label="Reference Number2" variant="outlined" fullWidth />
+                                <TextField onChange={(e)=>setFormData((prev) => ({ ...prev, referenceNumber2: e.target.value }))} value={formData.referenceNumber2 || ""} label="Reference Number2" variant="outlined" fullWidth />
                             </Grid>
                             <Grid item size={{ xs: 4 }}>
-                                <TextField label="Reference Number3" variant="outlined" fullWidth />
+                                <TextField onChange={(e)=>setFormData((prev) => ({ ...prev, referenceNumber3: e.target.value }))} value={formData.referenceNumber3 || ""} label="Reference Number3" variant="outlined" fullWidth />
                             </Grid>
                             <Grid item size={{ xs: 8 }}>
-                                <TextField label="Remarks" variant="outlined" fullWidth />
+                                <TextField onChange={(e)=>setFormData((prev) => ({ ...prev, remarks: e.target.value }))} value={formData.remarks || ""} label="Remarks" variant="outlined" fullWidth />
                             </Grid>
                         </Grid>
                     </AccordionDetails>
