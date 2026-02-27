@@ -258,8 +258,7 @@ function WorkOrderDetails() {
                                 />
                             </Grid>
                             <Grid item size={{ xs: 4 }}>
-                                {/* TODO: fix priorities not working due to default value loading being broken */}
-                                <Autocomplete disabled={formData.disableWOAssets} variant="outlined" sx={{ width: "100%" }} onChange={(event, value) => { setFormData((prev) => ({ ...prev, priorityId: value.ID })) }} value={suggestions.priorityId?.find((item) => item.ID === formData.priorityId) || null} options={suggestions.priorityId || []} getOptionLabel={(option) => option.textField || ""} fullWidth renderInput={(params) => (
+                                <Autocomplete disabled={formData.disableWOAssets} variant="outlined" sx={{ width: "100%" }} onChange={(event, value) => { setFormData((prev) => ({ ...prev, priorityId: value.ID })) }} value={suggestions.priorityId?.find((item) => {console.log("Looking for priorityId:", formData.priorityId, "Found item:", item);return item.ID === formData.priorityId}) || null} options={suggestions.priorityId || []} getOptionLabel={(option) => option.priorityName || ""} fullWidth renderInput={(params) => (
                                     <TextField onClick={() => getPrioritiesByAsset("priorityId")} label="Priority" {...params} slotProps={{
                                         input: {
                                             ...params.InputProps,
