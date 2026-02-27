@@ -39,7 +39,7 @@ function WorkOrder() {
             let temp = []
             res.list.forEach(element => {
                 // the object has to be structured with two name fields so autocomplete can structure its search and display properly
-                temp.push({ label: element.name, [fieldName+"Id"]:{ID:element.ID,name:element.name,searchField:element.searchField} })
+                temp.push({ label: element.name, [fieldName+"Id"]:{valueField:element.ID,textField:element.name,searchField:element.searchField} })
             })
             console.log(Suggestions)
             setSuggestions(prev => ({ ...prev, [fieldName]: temp }))
@@ -61,13 +61,12 @@ function WorkOrder() {
             return res.json()
         }).then(res => setData(res)).catch(e => navigate("/"))
     }
-    async function applyFilter() {
-    }
     return (
         <Box sx={{ height: "100vh", width: "100vw", bgcolor: "#1c2025", display: "flex" }}>
             <DashboardLayout />
             <Box sx={{ overflowY: "scroll", overflowX: "hidden", width: "100%", marginTop: "64px", marginLeft: "256px", padding: "20px", paddingTop: "50px", paddingBottom: "50px" }}>
                 <Grid container>
+                    {/* TODO fix autocomplete fields not working with filter */}
                     <Accordion sx={{ bgcolor: "#313439", borderRadius: "10px", width: "100%" }}>
                         <AccordionSummary expandIcon={<ExpandMore />}>
                             <Typography variant="h5" color="textPrimary">Filter</Typography>
@@ -96,7 +95,7 @@ function WorkOrder() {
                                                         {params.InputProps.endAdornment}
                                                     </>)
                                             }
-                                        }} onClick={() => (Suggestions.location ? null : getAutoCompleteSuggestions(6005, "location"))} />)} onChange={(e,v)=> setFilter(prev => ({ ...prev, locationId: v }))} value={filter.locationId} />
+                                        }} onClick={() => (Suggestions.location ? null : getAutoCompleteSuggestions(6001, "location"))} />)} onChange={(e,v)=> setFilter(prev => ({ ...prev, locationId: v }))} value={filter.locationId} />
                                 </Grid>
                                 <Grid item size={{ xs: 4 }}>
                                     <Autocomplete variant="outlined" options={Suggestions.maintenanceType || []} fullWidth renderInput={(params) => (<TextField {...params} label="Maintenance Type"
@@ -163,7 +162,7 @@ function WorkOrder() {
                         <Toolbar sx={{ bgcolor: "#313439", marginTop: "20px", borderRadius: "5px" }}>
                             <Typography color="textPrimary">Work Orders</Typography>
                             <div style={{ flexGrow: "1" }}></div>
-                            <Button sx={{ fontWeight: "bold" }} variant="contained">
+                            <Button onClick={() => navigate("/transactions/workorder/new")} sx={{ fontWeight: "bold" }} variant="contained">
                                 + NEW
                             </Button>
                         </Toolbar>

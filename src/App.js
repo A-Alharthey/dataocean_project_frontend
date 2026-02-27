@@ -12,7 +12,8 @@ const router = createBrowserRouter([
   {path:"/dashboard",element:<Dashboard/>},
   {path:"/transactions/workorder", element:<WorkOrder/>},
   {path:"/transactions/technicianservices", element:<TechnicianServices/>},
-  {path:"/transactions/workorder/:id", element:<WorkOrderDetails/>}
+  {path:"/transactions/workorder/:id", element:<WorkOrderDetails/>,loader:()=>({editMode:true})},
+  {path:"/transactions/workorder/new", element:<WorkOrderDetails />,loader:()=>({editMode:false})},
 ])
 const theme = createTheme({
   palette:{
