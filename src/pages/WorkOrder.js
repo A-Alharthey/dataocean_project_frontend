@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker"
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider"
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs"
+import dayjs from "dayjs";
 function WorkOrder() {
     const navigate = useNavigate();
     const [page, setPage] = useState(0)
@@ -18,7 +19,7 @@ function WorkOrder() {
     //http://92.205.234.30:7071/api/WorkOrder/GetList?pageSize=150&pageNumber=1&criteria={"code":"a","fromDate":"2026/2/23","fromNumber":"1","locationId":{"valueField":173,"textField":"MNT-BIO-BioMedical","searchField":"MNT-BIO"},"maintenanceTypeId":{"valueField":16,"textField":"MNT-0001-PPM","searchField":"MNT-0001"},"number":"1","priorityId":{"valueField":5,"textField":"E-Emergency","searchField":"E"},"status":{"valueField":1,"textField":"1-Open","searchField":"1"},"title":"t","toDate":"2026/2/24","toNumber":"4"}
     useEffect(() => {
         getTableData()
-    }, [page,pageSize])
+    }, [page, pageSize])
     //the autocomplete function needs specific ids to fetch data, the ids are as follow: location: 6001, maintenanceType: 6005, priority: 6004, status: 6010
     async function getAutoCompleteSuggestions(id, fieldName) {
         const config = {
@@ -38,8 +39,7 @@ function WorkOrder() {
         }).then(res => {
             let temp = []
             res.list.forEach(element => {
-                // the object has to be structured with two name fields so autocomplete can structure its search and display properly
-                temp.push({ label: element.name, [fieldName+"Id"]:{valueField:element.ID,textField:element.name,searchField:element.searchField} })
+                temp.push({ valueField: element.ID, textField: element.name, searchField: element.searchField })
             })
             console.log(Suggestions)
             setSuggestions(prev => ({ ...prev, [fieldName]: temp }))
@@ -54,7 +54,7 @@ function WorkOrder() {
                 "formid": "903005"
             }
         }
-        fetch(`http://92.205.234.30:7071/api/WorkOrder/GetList?pageSize=${pageSize}&pageNumber=${page+1}&criteria=${JSON.stringify(filter)}`, config).then(res => {
+        fetch(`http://92.205.234.30:7071/api/WorkOrder/GetList?pageSize=${pageSize}&pageNumber=${page + 1}&criteria=${JSON.stringify(filter)}`, config).then(res => {
             if (!res.ok) {
                 navigate("/")
             }
@@ -74,11 +74,11 @@ function WorkOrder() {
                         <AccordionDetails sx={{ paddingTop: "30px", borderTop: "solid 0.5px" }}>
                             <Grid container spacing={3} sx={{ width: "100%" }}>
                                 <Grid item size={{ xs: 4 }}>
-                                    <TextField  label="WO Code" variant="outlined" fullWidth value={filter.code} onChange={(e) => setFilter(prev => ({ ...prev, code: e.target.value }))} />
+                                    <TextField label="WO Code" variant="outlined" fullWidth value={filter.code} onChange={(e) => setFilter(prev => ({ ...prev, code: e.target.value }))} />
                                 </Grid>
                                 <Grid item size={{ xs: 4 }}>
                                     <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                        <DatePicker  label="From WO Date" variant="outlined" sx={{ width: "100%" }} value={filter.fromDate} onChange={(e) => setFilter(prev => ({ ...prev, fromDate: e }))} />
+                                        <DatePicker label="From WO Date" variant="outlined" sx={{ width: "100%" }} value={filter.fromDate ? dayjs(filter.fromDate, "MM-DD-YYYY") : null} onChange={(e) => setFilter(prev => ({ ...prev, fromDate: e ? dayjs(e).format("MM-DD-YYYY") : null }))} />
                                     </LocalizationProvider>
                                 </Grid>
                                 <Grid item size={{ xs: 4 }}>
@@ -95,7 +95,7 @@ function WorkOrder() {
                                                         {params.InputProps.endAdornment}
                                                     </>)
                                             }
-                                        }} onClick={() => (Suggestions.location ? null : getAutoCompleteSuggestions(6001, "location"))} />)} onChange={(e,v)=> setFilter(prev => ({ ...prev, locationId: v }))} value={filter.locationId} />
+                                        }} onClick={() => (Suggestions.location ? null : getAutoCompleteSuggestions(6001, "location"))} />)} isOptionEqualToValue={(option, value) => option.valueField === value.valueField} getOptionLabel={(option) => option.textField || ""} onChange={(e, v) => setFilter(prev => ({ ...prev, locationId: v }))} value={filter.locationId || null} />
                                 </Grid>
                                 <Grid item size={{ xs: 4 }}>
                                     <Autocomplete variant="outlined" options={Suggestions.maintenanceType || []} fullWidth renderInput={(params) => (<TextField {...params} label="Maintenance Type"
@@ -108,7 +108,7 @@ function WorkOrder() {
                                                         {params.InputProps.endAdornment}
                                                     </>)
                                             }
-                                        }} onClick={() => (Suggestions.maintenanceType ? null : getAutoCompleteSuggestions(6005, "maintenanceType"))} />)}   onChange={(e,v)=> setFilter(prev => ({ ...prev, maintenanceTypeId: v }))} value={filter.maintenanceTypeId} />
+                                        }} onClick={() => (Suggestions.maintenanceType ? null : getAutoCompleteSuggestions(6005, "maintenanceType"))} />)} onChange={(e, v) => setFilter(prev => ({ ...prev, maintenanceTypeId: v }))} getOptionLabel={(option)=>option.textField} isOptionEqualToValue={(option, value) => option.valueField === value.valueField} value={filter.maintenanceTypeId || null} />
                                 </Grid>
                                 <Grid item size={{ xs: 4 }}>
                                     <TextField label="WO Number" variant="outlined" fullWidth value={filter.number} onChange={(e) => setFilter(prev => ({ ...prev, number: e.target.value }))} />
@@ -124,7 +124,7 @@ function WorkOrder() {
                                                         {params.InputProps.endAdornment}
                                                     </>)
                                             }
-                                        }} onClick={() => (Suggestions.priority ? null : getAutoCompleteSuggestions(6004, "priority"))} />)} onChange={(e,v)=> setFilter(prev => ({ ...prev, priorityId: v }))} value={filter.priorityId} />
+                                        }} onClick={() => (Suggestions.priority ? null : getAutoCompleteSuggestions(6004, "priority"))} />)} onChange={(e, v) => setFilter(prev => ({ ...prev, priorityId: v }))} getOptionLabel={(option)=>option.textField} isOptionEqualToValue={(option, value) => option.valueField === value.valueField} value={filter.priorityId || null} />
                                 </Grid>
                                 <Grid item size={{ xs: 4 }}>
                                     <Autocomplete variant="outlined" options={Suggestions.status || []} fullWidth renderInput={(params) => (<TextField {...params} label="Status"
@@ -137,18 +137,18 @@ function WorkOrder() {
                                                         {params.InputProps.endAdornment}
                                                     </>)
                                             }
-                                        }} onClick={() => (Suggestions.status ? null : getAutoCompleteSuggestions(6003, "status"))} />)} onChange={(e,v)=> setFilter(prev => ({ ...prev, status: v }))} value={filter.status} />
+                                        }} onClick={() => (Suggestions.status ? null : getAutoCompleteSuggestions(6003, "status"))} />)} onChange={(e, v) => setFilter(prev => ({ ...prev, status: v }))} value={filter.status} />
                                 </Grid>
                                 <Grid item size={{ xs: 4 }}>
                                     <TextField label="WO Title" variant="outlined" fullWidth value={filter.title} onChange={(e) => setFilter(prev => ({ ...prev, title: e.target.value }))} />
                                 </Grid>
                                 <Grid item size={{ xs: 4 }}>
                                     <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                        <DatePicker label="To WO Date" variant="outlined" sx={{ width: "100%" }} value={filter.toDate} onChange={(e) => setFilter(prev => ({ ...prev, toDate: e }))} />
+                                        <DatePicker label="To WO Date" variant="outlined" sx={{ width: "100%" }} value={filter.toDate ? dayjs(filter.toDate, "YYYY-MM-DD") : null} onChange={(e) => setFilter(prev => ({ ...prev, toDate: e ? e.format("YYYY-MM-DD") : null }))} />
                                     </LocalizationProvider>
                                 </Grid>
                                 <Grid item size={{ xs: 4 }}>
-                                    <TextField label="To WO Number" variant="outlined" fullWidth value={filter.toNumber} onChange={(e) => setFilter(prev => ({ ...prev, toNumber: e.target.value }))} />
+                                    <TextField label="To WO Number" variant="outlined" fullWidth value={filter.toNumber || ""} onChange={(e) => setFilter(prev => ({ ...prev, toNumber: e.target.value }))} />
                                 </Grid>
                                 <Grid item size={{ xs: 12 }} sx={{ textAlign: "center" }}>
                                     <Button onClick={getTableData} variant="contained" sx={{}} >APPLY FILTER</Button>
