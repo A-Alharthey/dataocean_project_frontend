@@ -1,4 +1,4 @@
-import { Box, Accordion, AccordionSummary, Typography, AccordionDetails, TextField, Grid, Button, AppBar, Toolbar, Table, TableBody, TableRow, TableCell, TableHead, FormControl, FormControlLabel, Checkbox, Select, MenuItem, Autocomplete, CircularProgress } from "@mui/material";
+import { Box, Accordion, AccordionSummary, Typography, AccordionDetails, TextField, Grid, Button, AppBar, Toolbar, Table, TableBody, TableRow, TableCell, TableHead, FormControl, FormControlLabel, Checkbox, Select, MenuItem, Autocomplete, CircularProgress, TablePagination } from "@mui/material";
 import DashboardLayout from "./Components/DashboardLayout"
 import { ExpandMore, Label } from "@mui/icons-material";
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
@@ -14,6 +14,10 @@ function WorkOrderDetails() {
     const [suggestions, setSuggestions] = useState({})
     const [formData, setFormData] = useState({})
     const [isLoading, setIsLoading] = useState({})
+    const [page, setPage] = useState(0)
+    const [pageSize, setPageSize] = useState(10)
+    const [editingRowID, setEditingRowID] = useState(null)
+    const [modifiedWorkOrderDetails, setModifiedWorkOrderDetails] = useState({})
     const Navigate = useNavigate()
     const config = {
         method: "GET",
@@ -132,6 +136,15 @@ function WorkOrderDetails() {
         const data = JSON.parse(textData)
         setSuggestions((prev) => ({ ...prev, statusId: data.list }))
     }
+    function handleRowSave() {
+        formData.workOrderdetails = formData.workOrderdetails.map((detail) => {
+            if (detail.ID === editingRowID) {
+                return { ...detail, ...modifiedWorkOrderDetails }
+            }
+            return detail
+        })
+        setEditingRowID(null)
+    }
     return (
         <Box sx={{ height: "100vh", width: "100vw", bgcolor: "#1c2025", display: "flex" }}>
             <DashboardLayout />
@@ -140,6 +153,7 @@ function WorkOrderDetails() {
                     <Grid item xs={12}>
                         <Typography variant="h4" color="textPrimary" >Work Orders</Typography>
                     </Grid>
+                    {/*TODO: make the functionality for these buttons and apply the correct styles*/}
                     <Grid item xs={12}>
                         <Button variant="contained">Cancel</Button>
                         <Button variant="contained">Save</Button>
@@ -209,7 +223,7 @@ function WorkOrderDetails() {
                             </Grid>
                             <Grid item size={{ xs: 4 }}>
                                 <Autocomplete onChange={(event, value) => { setFormData((prev) => ({ ...prev, vendorId: value })) }} value={formData.vendorId || null} isOptionEqualToValue={(option, value) => option.valueField === value.valueField} getOptionKey={(option) => option.valueField} options={suggestions.vendorId || []} getOptionLabel={(option) => option.textField || ""} fullWidth renderInput={(params) => (
-                                    <TextField onClick={() => (getSuggestion("vendorId", 6006))} label="Vendor" {...params} slotProps={{
+                                    <TextField onClick={() => (getSuggestion("vendorId", 6015))} label="Vendor" {...params} slotProps={{
                                         input: {
                                             ...params.InputProps,
                                             endAdornment:
@@ -260,7 +274,7 @@ function WorkOrderDetails() {
                                 />
                             </Grid>
                             <Grid item size={{ xs: 4 }}>
-                                <Autocomplete disabled={formData.disableWOAssets} variant="outlined" sx={{ width: "100%" }} onChange={(event, value) => { setFormData((prev) => ({ ...prev, priorityId: value.ID })) }} value={suggestions.priorityId?.find((item) => { console.log("Looking for priorityId:", formData.priorityId, "Found item:", item); return item.ID === formData.priorityId }) || null} options={suggestions.priorityId || []} getOptionLabel={(option) => option.priorityName || ""} fullWidth renderInput={(params) => (
+                                <Autocomplete disabled={formData.disableWOAssets} variant="outlined" sx={{ width: "100%" }} onChange={(event, value) => { setFormData((prev) => ({ ...prev, priorityId: value.ID })) }} value={suggestions.priorityId?.find((item) => item.ID === formData.priorityId) || null} options={suggestions.priorityId || []} getOptionLabel={(option) => option.priorityName || ""} fullWidth renderInput={(params) => (
                                     <TextField onClick={() => getPrioritiesByAsset("priorityId")} label="Priority" {...params} slotProps={{
                                         input: {
                                             ...params.InputProps,
@@ -300,20 +314,127 @@ function WorkOrderDetails() {
                                 </LocalizationProvider>
                             </Grid>
                             <Grid item size={{ xs: 4 }}>
-                                <TextField onChange={(e)=>setFormData((prev) => ({ ...prev, referenceNumber1: e.target.value }))} value={formData.referenceNumber1 || ""} label="Reference Number1" variant="outlined" fullWidth />
+                                <TextField onChange={(e) => setFormData((prev) => ({ ...prev, referenceNumber1: e.target.value }))} value={formData.referenceNumber1 || ""} label="Reference Number1" variant="outlined" fullWidth />
                             </Grid>
                             <Grid item size={{ xs: 4 }}>
-                                <TextField onChange={(e)=>setFormData((prev) => ({ ...prev, referenceNumber2: e.target.value }))} value={formData.referenceNumber2 || ""} label="Reference Number2" variant="outlined" fullWidth />
+                                <TextField onChange={(e) => setFormData((prev) => ({ ...prev, referenceNumber2: e.target.value }))} value={formData.referenceNumber2 || ""} label="Reference Number2" variant="outlined" fullWidth />
                             </Grid>
                             <Grid item size={{ xs: 4 }}>
-                                <TextField onChange={(e)=>setFormData((prev) => ({ ...prev, referenceNumber3: e.target.value }))} value={formData.referenceNumber3 || ""} label="Reference Number3" variant="outlined" fullWidth />
+                                <TextField onChange={(e) => setFormData((prev) => ({ ...prev, referenceNumber3: e.target.value }))} value={formData.referenceNumber3 || ""} label="Reference Number3" variant="outlined" fullWidth />
                             </Grid>
                             <Grid item size={{ xs: 8 }}>
-                                <TextField onChange={(e)=>setFormData((prev) => ({ ...prev, remarks: e.target.value }))} value={formData.remarks || ""} label="Remarks" variant="outlined" fullWidth />
+                                <TextField onChange={(e) => setFormData((prev) => ({ ...prev, remarks: e.target.value }))} value={formData.remarks || ""} label="Remarks" variant="outlined" fullWidth />
                             </Grid>
                         </Grid>
                     </AccordionDetails>
                 </Accordion>
+                <Grid container>
+                    <Grid item size={{ xs: 12 }} sx={{ marginTop: "20px" }}>
+                        <Toolbar sx={{ bgcolor: "#313439", marginTop: "20px", borderRadius: "5px" }}>
+                            <Typography color="textPrimary">Work Order details</Typography>
+                            <div style={{ flexGrow: "1" }}></div>
+                            <Button onClick={() => alert("test")} sx={{ fontWeight: "bold" }} variant="contained">
+                                + NEW
+                            </Button>
+                        </Toolbar>
+                    </Grid>
+                    <Grid overflow={"scroll"} item size={{ xs: 12 }} sx={{ borderTop: "0.5px solid rgb(224, 224, 224)" }}>
+                        <Table>
+                            <TableHead>
+                                <TableRow sx={{ bgcolor: "#313439" }}>
+                                    <TableCell>Sequence</TableCell>
+                                    <TableCell>Service Type Group</TableCell>
+                                    <TableCell>Service Type Group Name</TableCell>
+                                    <TableCell>Assign to Technician</TableCell>
+                                    <TableCell>Technician Notes</TableCell>
+                                    <TableCell>Service Type Group Status</TableCell>
+                                    <TableCell>Service Type Group Link</TableCell>
+                                    <TableCell>Actions</TableCell>
+                                </TableRow>
+                            </TableHead>
+                            {/*TODO: make the functionality for adding new workOrderdetails rows */}
+                            <TableBody sx={{ bgcolor: "#1c2025" }}>
+                                {formData.workOrderdetails && formData.workOrderdetails?.length > 0 ? formData.workOrderdetails?.map((row, index) => (
+                                    <TableRow key={index}>
+                                        <TableCell>{row.sequence}</TableCell>
+                                        {editingRowID === row.ID ?
+                                            <TableCell>
+                                                {console.log(suggestions, modifiedWorkOrderDetails)}
+                                                <Autocomplete disableClearable onChange={(e, value) => { setModifiedWorkOrderDetails(prev => ({ ...prev, serviceTypeGroup: value.valueField, serviceTypeGroupName: value.textField })) }} value={suggestions.serviceTypeGroupId?.find((item) => item.valueField === modifiedWorkOrderDetails.serviceTypeGroup) || null} options={suggestions.serviceTypeGroupId || []} getOptionLabel={(option) => option.textField || ""} fullWidth renderInput={(params) => (
+                                                    <TextField variant="standard" onClick={() => getSuggestion("serviceTypeGroupId", 6006)} label="Service Type Group" {...params} slotProps={{
+                                                        input: {
+                                                            ...params.InputProps,
+                                                            endAdornment:
+                                                                <>
+                                                                    {isLoading.serviceTypeGroupId ? <CircularProgress sx={{ color: "text.primary", marginRight: "10px" }} /> : null}
+                                                                    {params.InputProps.endAdornment}
+                                                                </>
+                                                        }
+                                                    }} />)
+                                                } />
+                                            </TableCell> : <TableCell>{row.serviceTypeGroupName}</TableCell>
+                                        }
+
+                                        <TableCell>{row.serviceTypeGroupNotes}</TableCell>
+                                        {editingRowID === row.ID ?
+                                            <TableCell>
+                                                {console.log(suggestions, modifiedWorkOrderDetails)}
+                                                <Autocomplete disableClearable onChange={(e, value) => { setModifiedWorkOrderDetails(prev => ({ ...prev, technician: value.valueField, technicianName: value.textField })) }} value={suggestions.technicianId?.find((item) => item.valueField === modifiedWorkOrderDetails.technician) || null} options={suggestions.technicianId || []} getOptionLabel={(option) => option.textField || ""} fullWidth renderInput={(params) => (
+                                                    <TextField variant="standard" onClick={() => getSuggestion("technicianId", 6007)} label="Technician" {...params} slotProps={{
+                                                        input: {
+                                                            ...params.InputProps,
+                                                            endAdornment:
+                                                                <>
+                                                                    {isLoading.technicianId ? <CircularProgress sx={{ color: "text.primary", marginRight: "10px" }} /> : null}
+                                                                    {params.InputProps.endAdornment}
+                                                                </>
+                                                        }
+                                                    }} />)
+                                                } />
+                                            </TableCell> : <TableCell>{row.technicianName}</TableCell>
+                                        }
+                                        {editingRowID === row.ID ? <TableCell><TextField variant="standard" value={modifiedWorkOrderDetails.technicianNotes || ""} onChange={(e) => setModifiedWorkOrderDetails(prev => ({ ...prev, technicianNotes: e.target.value }))} /></TableCell> : <TableCell>{row.technicianNotes}</TableCell>}
+                                        {editingRowID === row.ID ?
+                                            <TableCell>
+                                                {console.log(suggestions, modifiedWorkOrderDetails)}
+                                                <Autocomplete disableClearable onChange={(e, value) => { setModifiedWorkOrderDetails(prev => ({ ...prev, serviceTypeGroupStatus: value.valueField, serviceTypeGroupStatusName: value.textField })) }} value={suggestions.serviceTypeGroupStatus?.find((item) => item.valueField === modifiedWorkOrderDetails.serviceTypeGroupStatus) || null} options={suggestions.serviceTypeGroupStatus || []} getOptionLabel={(option) => option.textField || ""} fullWidth renderInput={(params) => (
+                                                    <TextField variant="standard" onClick={() => getSuggestion("serviceTypeGroupStatus", 6008)} label="Service Type Group Status" {...params} slotProps={{
+                                                        input: {
+                                                            ...params.InputProps,
+                                                            endAdornment:
+                                                                <>
+                                                                    {isLoading.serviceTypeGroupStatus ? <CircularProgress sx={{ color: "text.primary", marginRight: "10px" }} /> : null}
+                                                                    {params.InputProps.endAdornment}
+                                                                </>
+                                                        }
+                                                    }} />)
+                                                } />
+                                            </TableCell> : <TableCell>{row.serviceTypeGroupStatusName}</TableCell>
+                                        }
+                                        <TableCell>
+                                            <Button onClick={() => Navigate(`/transactions/technicianservices/${row.serviceTypeGroupLink}`)}>View</Button>
+                                        </TableCell>
+                                        <TableCell>
+                                            {editingRowID === row.ID ? <Button variant="outlined" size="small" onClick={() => handleRowSave()}>Save</Button> : <Button variant="outlined" size="small" onClick={() => setEditingRowID(row.ID)}>Edit</Button>}
+                                            {console.log(formData.workOrderdetails, index)}
+                                            {editingRowID === row.ID ? <Button variant="outlined" size="small" onClick={() => { setEditingRowID(null); setModifiedWorkOrderDetails({}) }} sx={{ ml: 1 }}>Cancel</Button> : <Button variant="outlined" size="small" onClick={() => setFormData((prev) => ({ ...prev, workOrderdetails: prev.workOrderdetails.filter((_, i) => i !== index) }))} sx={{ ml: 1 }}>Delete</Button>}
+                                        </TableCell>
+                                    </TableRow>
+                                )) : <Typography variant="body1" color="textPrimary" sx={{ padding: "20px" }}>No details found.</Typography>}
+                            </TableBody>
+                        </Table>
+                    </Grid>
+                    <TablePagination
+                        sx={{ bgcolor: "#313439", width: "100%" }}
+                        component="div"
+                        count={formData.workOrderDetails?.total || 0}
+                        page={page}
+                        rowsPerPage={pageSize}
+                        onPageChange={(event, newPage) => setPage(newPage)}
+                        onRowsPerPageChange={(event) => setPageSize(parseInt(event.target.value, 10))}
+                        rowsPerPageOptions={[5, 10, 25]}
+                    />
+                </Grid>
             </Box>
         </Box>
     )
