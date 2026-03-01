@@ -18,13 +18,15 @@ function WorkOrderDetails() {
     const [pageSize, setPageSize] = useState(10)
     const [editingRowID, setEditingRowID] = useState(null)
     const [modifiedWorkOrderDetails, setModifiedWorkOrderDetails] = useState({})
+    const [createNewWorkOrderDetails, setCreateNewWorkOrderDetails] = useState(false)
     const Navigate = useNavigate()
     const config = {
         method: "GET",
         headers: {
             "Accept": "application/json, text/plain, */*",
             "Authorization": `bearer ${window.localStorage.getItem("token")}`,
-            "formid": "903005"
+            "formid": "903005",
+            "content-type": "application/json;charset=utf-8"
         }
     }
     useEffect(() => {
@@ -145,6 +147,23 @@ function WorkOrderDetails() {
         })
         setEditingRowID(null)
     }
+    async function sendData() {
+        if (!editMode) {
+            alert("Creating new work order is not implemented yet!")
+            return
+        }
+        const postConfig = config
+        postConfig.method = "POST"
+        postConfig.body = JSON.stringify({ dataObj: JSON.stringify(formData) })
+        const data = await fetch("http://92.205.234.30:7071/api/WorkOrder/Save", postConfig)
+        console.log(!data.ok)
+        if (!data.ok) {
+            alert("save went wrong!")
+            return
+        }
+        alert("Work order saved successfully!")
+        Navigate("/transactions/workorder")
+    }
     return (
         <Box sx={{ height: "100vh", width: "100vw", bgcolor: "#1c2025", display: "flex" }}>
             <DashboardLayout />
@@ -156,7 +175,7 @@ function WorkOrderDetails() {
                     {/*TODO: make the functionality for these buttons and apply the correct styles*/}
                     <Grid item xs={12}>
                         <Button variant="contained">Cancel</Button>
-                        <Button variant="contained">Save</Button>
+                        <Button variant="contained" onClick={sendData}>Save</Button>
                         <Button variant="contained">Print</Button>
                     </Grid>
                 </Grid>
@@ -333,7 +352,8 @@ function WorkOrderDetails() {
                         <Toolbar sx={{ bgcolor: "#313439", marginTop: "20px", borderRadius: "5px" }}>
                             <Typography color="textPrimary">Work Order details</Typography>
                             <div style={{ flexGrow: "1" }}></div>
-                            <Button onClick={() => alert("test")} sx={{ fontWeight: "bold" }} variant="contained">
+                            {/*TODO: make the functionality for adding new workOrderdetails rows */}
+                            <Button onClick={() => alert("not implemented yet")} sx={{ fontWeight: "bold" }} variant="contained">
                                 + NEW
                             </Button>
                         </Toolbar>
@@ -352,7 +372,6 @@ function WorkOrderDetails() {
                                     <TableCell>Actions</TableCell>
                                 </TableRow>
                             </TableHead>
-                            {/*TODO: make the functionality for adding new workOrderdetails rows */}
                             <TableBody sx={{ bgcolor: "#1c2025" }}>
                                 {formData.workOrderdetails && formData.workOrderdetails?.length > 0 ? formData.workOrderdetails?.map((row, index) => (
                                     <TableRow key={index}>
@@ -416,7 +435,6 @@ function WorkOrderDetails() {
                                         </TableCell>
                                         <TableCell>
                                             {editingRowID === row.ID ? <Button variant="outlined" size="small" onClick={() => handleRowSave()}>Save</Button> : <Button variant="outlined" size="small" onClick={() => setEditingRowID(row.ID)}>Edit</Button>}
-                                            {console.log(formData.workOrderdetails, index)}
                                             {editingRowID === row.ID ? <Button variant="outlined" size="small" onClick={() => { setEditingRowID(null); setModifiedWorkOrderDetails({}) }} sx={{ ml: 1 }}>Cancel</Button> : <Button variant="outlined" size="small" onClick={() => setFormData((prev) => ({ ...prev, workOrderdetails: prev.workOrderdetails.filter((_, i) => i !== index) }))} sx={{ ml: 1 }}>Delete</Button>}
                                         </TableCell>
                                     </TableRow>
@@ -427,7 +445,7 @@ function WorkOrderDetails() {
                     <TablePagination
                         sx={{ bgcolor: "#313439", width: "100%" }}
                         component="div"
-                        count={formData.workOrderDetails?.total || 0}
+                        count={formData.workOrderdetails?.length || 0}
                         page={page}
                         rowsPerPage={pageSize}
                         onPageChange={(event, newPage) => setPage(newPage)}
