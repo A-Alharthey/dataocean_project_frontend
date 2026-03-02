@@ -195,7 +195,7 @@ function TechnicianServices() {
                                     data.list ? data.list.map((item) => (
                                         <TableRow key={item.ID} sx={{ bgcolor: "#313439" }}>
                                             <TableCell sx={{ padding: "0px", textAlign: "center" }}>
-                                                <Button onClick={() => navigate(`/transactions/workorder/${item.ID}`)} sx={{ color: "rgba(255, 255, 255, 0.54)" }}>
+                                                <Button onClick={() => navigate(`/transactions/technicianservices/${item.ID}`)} sx={{ color: "rgba(255, 255, 255, 0.54)" }}>
                                                     <ArrowForwardIcon />
                                                 </Button>
                                             </TableCell>

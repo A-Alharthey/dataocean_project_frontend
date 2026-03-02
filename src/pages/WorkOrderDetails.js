@@ -454,6 +454,7 @@ function WorkOrderDetails() {
                     />
                 </Grid>
             </Box>
+            {/*TODO: make the Technician Services Details table */}
         </Box>
     )
 }

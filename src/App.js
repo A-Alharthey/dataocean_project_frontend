@@ -7,6 +7,7 @@ import Dashboard from './pages/Dashboard';
 import TechnicianServices from './pages/TechnicianServices';
 import WorkOrder from './pages/WorkOrder';
 import WorkOrderDetails from './pages/WorkOrderDetails';
+import TechnicianServicesDetails from './pages/TechnicianServicesDetails';
 const router = createBrowserRouter([
   {path:"/",element:<SignIn/>},
   {path:"/dashboard",element:<Dashboard/>},
@@ -14,6 +15,7 @@ const router = createBrowserRouter([
   {path:"/transactions/technicianservices", element:<TechnicianServices/>},
   {path:"/transactions/workorder/:id", element:<WorkOrderDetails/>,loader:()=>({editMode:true})},
   {path:"/transactions/workorder/new", element:<WorkOrderDetails />,loader:()=>({editMode:false})},
+  {path:"/transactions/technicianservices/:id", element:<TechnicianServicesDetails/>},
 ])
 const theme = createTheme({
   palette:{
