@@ -1,5 +1,5 @@
 import { Accordion, AccordionDetails, AccordionSummary, Autocomplete, Box, Button, CircularProgress, FormControl, FormControlLabel, Grid, TextField, Typography } from "@mui/material";
-import DashboardLayout from "./Components/DashboardLayout";
+import DashboardLayout from "./components/DashboardLayout";
 import { use, useEffect, useRef, useState } from "react";
 import { CheckBox, ExpandMore } from "@mui/icons-material";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";

@@ -74,7 +74,7 @@ function SignIn() {
               <Link underline='hover' href='/forgetpassword'>Forget Password</Link>
             </Typography>
           </CardContent>
-          { matches && <CardMedia image='/auth.png' sx={{ flexGrow: "1", flexBasis: "50%" }} />}
+          { matches && <CardMedia image='./auth.png' sx={{ flexGrow: "1", flexBasis: "50%" }} />}
         </Card>
       </Paper>
     </Box>

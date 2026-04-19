@@ -59,7 +59,7 @@ function DashboardLayout() {
                         <Typography sx={{ marginLeft: "8px" }} variant="body2" color="textPrimary">Ahmed</Typography>
                     </Button>
                     <Button type="button">
-                        <Avatar variant="circular" src="/Company_Logo.jpg" />
+                        <Avatar variant="circular" src="./Company_Logo.jpg" />
                         <Typography sx={{ marginLeft: "8px" }} variant="body2" color="textPrimary">mnt-test</Typography>
                     </Button>
                 </Toolbar>

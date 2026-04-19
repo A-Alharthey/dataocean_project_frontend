@@ -1,5 +1,5 @@
 import { Box, Accordion, AccordionSummary, Typography, AccordionDetails, TextField, Grid, Button, AppBar, Toolbar, Table, TableBody, TableRow, TableCell, TableHead, FormControl, FormControlLabel, Checkbox, Select, MenuItem, Autocomplete, CircularProgress, TablePagination } from "@mui/material";
-import DashboardLayout from "./Components/DashboardLayout"
+import DashboardLayout from "./components/DashboardLayout"
 import { ExpandMore, Label } from "@mui/icons-material";
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import { useLoaderData, useNavigate, useParams } from "react-router-dom";
