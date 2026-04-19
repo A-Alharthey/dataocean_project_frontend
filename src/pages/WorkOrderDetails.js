@@ -45,7 +45,7 @@ function WorkOrderDetails() {
     }, [formData.assetItemId])
     //incase of edit mode, get the data by id and fill the form also disable all three fields number code and location and make them uneditable
     async function getByID() {
-        const result = await fetch(`https://cors-anywhere.herokuapp.com/http://92.205.234.30:7071/api/WorkOrder/GetByID?ID=${id}`, config)
+        const result = await fetch(`https://data-ocean-proxy-three.vercel.app/api/proxy?path=WorkOrder/GetByID?ID=${id}`, config)
         if (!result.ok) {
             alert("getByID went wrong!")
             return
@@ -54,7 +54,7 @@ function WorkOrderDetails() {
         setFormData(data)
     }
     async function setCodeAndNumber() {
-        const result = await fetch(`https://cors-anywhere.herokuapp.com/http://92.205.234.30:7071/api/WorkOrder/GetNextCodeWO?LocationId=${formData.locationId}`, config)
+        const result = await fetch(`https://data-ocean-proxy-three.vercel.app/api/proxy?path=WorkOrder/GetNextCodeWO?LocationId=${formData.locationId}`, config)
         if (!result.ok) {
             alert("setCodeAndNumber went wrong!")
             return
@@ -79,7 +79,7 @@ function WorkOrderDetails() {
     async function getSuggestion(elementName, id) {
         if (suggestions[elementName]) return
         setIsLoading((prev) => ({ ...prev, [elementName]: true }))
-        const result = await fetch(`https://cors-anywhere.herokuapp.com/http://92.205.234.30:7071/api/General/Search?SearchID=${id}&loadLimit=100`, config).finally(() => setIsLoading((prev) => ({ ...prev, [elementName]: false })))
+        const result = await fetch(`https://data-ocean-proxy-three.vercel.app/api/proxy?path=General/Search?SearchID=${id}&loadLimit=100`, config).finally(() => setIsLoading((prev) => ({ ...prev, [elementName]: false })))
         if (!result.ok) {
             alert("getSuggestion went wrong!")
             return
@@ -93,7 +93,7 @@ function WorkOrderDetails() {
     }
     async function getAssets(elementName) {
         setIsLoading((prev) => ({ ...prev, [elementName]: true }))
-        const result = await fetch(`https://cors-anywhere.herokuapp.com/http://92.205.234.30:7071/api/WorkOrder/GetAllAssetItems?LocationId=${formData.locationId}&assetLocationId=${formData.assetLocationId?.valueField}`, config).finally(() => setIsLoading((prev) => ({ ...prev, [elementName]: false })))
+        const result = await fetch(`https://data-ocean-proxy-three.vercel.app/api/proxy?path=WorkOrder/GetAllAssetItems?LocationId=${formData.locationId}&assetLocationId=${formData.assetLocationId?.valueField}`, config).finally(() => setIsLoading((prev) => ({ ...prev, [elementName]: false })))
         if (!result.ok) {
             alert("getAssets went wrong!")
             return
@@ -109,7 +109,7 @@ function WorkOrderDetails() {
     async function getPrioritiesByAsset(elementName) {
         if (!formData.assetItemId) return
         setIsLoading((prev) => ({ ...prev, [elementName]: true }))
-        const result = await fetch(`https://cors-anywhere.herokuapp.com/http://92.205.234.30:7071/api/WorkOrder/GetPrioritiesByAsset?formid=903005&assetItemId=${formData.assetItemId}`, config).finally(() => setIsLoading((prev) => ({ ...prev, [elementName]: false })))
+        const result = await fetch(`https://data-ocean-proxy-three.vercel.app/api/proxy?path=WorkOrder/GetPrioritiesByAsset?formid=903005&assetItemId=${formData.assetItemId}`, config).finally(() => setIsLoading((prev) => ({ ...prev, [elementName]: false })))
         if (!result.ok) {
             alert("getPrioritiesByAsset went wrong!")
             return
@@ -125,7 +125,7 @@ function WorkOrderDetails() {
     async function getStatuses() {
         if (suggestions.statusId) return
         setIsLoading((prev) => ({ ...prev, statusId: true }))
-        const result = await fetch(`https://cors-anywhere.herokuapp.com/http://92.205.234.30:7071/api/WorkOrder/GetMNTWorkOrderStatuses`, config).finally(() => setIsLoading((prev) => ({ ...prev, statusId: false })))
+        const result = await fetch(`https://data-ocean-proxy-three.vercel.app/api/proxy?path=WorkOrder/GetMNTWorkOrderStatuses`, config).finally(() => setIsLoading((prev) => ({ ...prev, statusId: false })))
         if (!result.ok) {
             alert("getStatuses went wrong!")
             return

@@ -28,7 +28,7 @@ function TechnicianServicesDetails() {
         }
     }
     async function getById() {
-        const response = await fetch(`https://cors-anywhere.herokuapp.com/http://92.205.234.30:7071/api/TechnicianServices/GetByID?ID=${id}`, config)
+        const response = await fetch(`https://data-ocean-proxy-three.vercel.app/api/proxy?path=TechnicianServices/GetByID?ID=${id}`, config)
         if (!response.ok) {
             alert("Error fetching data")
             return;
@@ -43,13 +43,13 @@ function TechnicianServicesDetails() {
     }
     async function getLocations() {
         setIsLoading({ ...isLoading, location: true });
-        const response = await fetch(`https://cors-anywhere.herokuapp.com/http://92.205.234.30:7071/api/Locations/GetLocations?mode=mnt`, config).finally(() => setIsLoading({ ...isLoading, location: false }));
+        const response = await fetch(`https://data-ocean-proxy-three.vercel.app/api/proxy?path=Locations/GetLocations?mode=mnt`, config).finally(() => setIsLoading({ ...isLoading, location: false }));
         const data = await response.json();
         setSuggestions({ ...suggestions, locations: data.list });
     }
     async function getStatuses() {
         setIsLoading({ ...isLoading, status: true });
-        const response = await fetch(`https://cors-anywhere.herokuapp.com/http://92.205.234.30:7071/api/TechnicianServices/GetMNTServiceTypeGroupStatuses`, config).finally(() => setIsLoading({ ...isLoading, status: false }));
+        const response = await fetch(`https://data-ocean-proxy-three.vercel.app/api/proxy?path=TechnicianServices/GetMNTServiceTypeGroupStatuses`, config).finally(() => setIsLoading({ ...isLoading, status: false }));
         const data = await response.json();
         setSuggestions({ ...suggestions, statuses: data.list });
     }

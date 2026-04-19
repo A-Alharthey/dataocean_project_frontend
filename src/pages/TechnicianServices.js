@@ -31,7 +31,7 @@ function TechnicianServices() {
             }
         }
         setIsLoading(prev => ({ ...prev, [fieldName]: true }))
-        fetch(`https://cors-anywhere.herokuapp.com/http://92.205.234.30:7071/api/General/Search?SearchID=${id}&loadLimit=100`, config).then(res => {
+        fetch(`https://data-ocean-proxy-three.vercel.app/api/proxy?path=General/Search?SearchID=${id}&loadLimit=100`, config).then(res => {
             if (!res.ok) {
                 navigate("/")
             }
@@ -54,7 +54,7 @@ function TechnicianServices() {
                 "formid": "903005"
             }
         }
-        fetch(`https://cors-anywhere.herokuapp.com/http://92.205.234.30:7071/api/TechnicianServices/GetList?pageSize=${pageSize}&pageNumber=${page + 1}&criteria=${JSON.stringify(filter)}`, config).then(res => {
+        fetch(`https://data-ocean-proxy-three.vercel.app/api/proxy?path=TechnicianServices/GetList?pageSize=${pageSize}&pageNumber=${page + 1}&criteria=${JSON.stringify(filter)}`, config).then(res => {
             if (!res.ok) {
                 navigate("/")
             }
