@@ -1,34 +1,34 @@
 import logo from './logo.svg';
 import './App.css';
-import { RouterProvider, createBrowserRouter } from 'react-router-dom';
+import { RouterProvider, createHashRouter } from 'react-router-dom';
 import SignIn from './pages/SignIn';
-import { ThemeProvider,createTheme } from '@mui/material';
+import { ThemeProvider, createTheme } from '@mui/material';
 import Dashboard from './pages/Dashboard';
 import TechnicianServices from './pages/TechnicianServices';
 import WorkOrder from './pages/WorkOrder';
 import WorkOrderDetails from './pages/WorkOrderDetails';
 import TechnicianServicesDetails from './pages/TechnicianServicesDetails';
-const router = createBrowserRouter([
-  {path:"/",element:<SignIn/>},
-  {path:"/dashboard",element:<Dashboard/>},
-  {path:"/transactions/workorder", element:<WorkOrder/>},
-  {path:"/transactions/technicianservices", element:<TechnicianServices/>},
-  {path:"/transactions/workorder/:id", element:<WorkOrderDetails/>,loader:()=>({editMode:true})},
-  {path:"/transactions/workorder/new", element:<WorkOrderDetails />,loader:()=>({editMode:false})},
-  {path:"/transactions/technicianservices/:id", element:<TechnicianServicesDetails/>},
+const router = createHashRouter([
+  { path: "/", element: <SignIn /> },
+  { path: "/dashboard", element: <Dashboard /> },
+  { path: "/transactions/workorder", element: <WorkOrder /> },
+  { path: "/transactions/technicianservices", element: <TechnicianServices /> },
+  { path: "/transactions/workorder/:id", element: <WorkOrderDetails />, loader: () => ({ editMode: true }) },
+  { path: "/transactions/workorder/new", element: <WorkOrderDetails />, loader: () => ({ editMode: false }) },
+  { path: "/transactions/technicianservices/:id", element: <TechnicianServicesDetails /> },
 ])
 const theme = createTheme({
-  palette:{
-    mode:"dark",
-    primary:{
-      main:"#8a85ff"
+  palette: {
+    mode: "dark",
+    primary: {
+      main: "#8a85ff"
     }
   }
 })
 function App() {
   return (
     <ThemeProvider theme={theme}>
-      <RouterProvider router={router}/>
+      <RouterProvider router={router} />
     </ThemeProvider>
   );
 }
