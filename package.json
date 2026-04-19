@@ -2,6 +2,7 @@
   "name": "dataocean_project_frontend",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://a-alharthey.github.io/dataocean_project_frontend/",
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",

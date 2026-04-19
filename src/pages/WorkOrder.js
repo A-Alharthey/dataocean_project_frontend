@@ -31,7 +31,7 @@ function WorkOrder() {
             }
         }
         setIsLoading(prev => ({ ...prev, [fieldName]: true }))
-        fetch(`http://92.205.234.30:7071/api/General/Search?SearchID=${id}&loadLimit=100`, config).then(res => {
+        fetch(`https://cors-anywhere.herokuapp.com/http://92.205.234.30:7071/api/General/Search?SearchID=${id}&loadLimit=100`, config).then(res => {
             if (!res.ok) {
                 navigate("/")
             }
@@ -54,7 +54,7 @@ function WorkOrder() {
                 "formid": "903005"
             }
         }
-        fetch(`http://92.205.234.30:7071/api/WorkOrder/GetList?pageSize=${pageSize}&pageNumber=${page + 1}&criteria=${JSON.stringify(filter)}`, config).then(res => {
+        fetch(`https://cors-anywhere.herokuapp.com/http://92.205.234.30:7071/api/WorkOrder/GetList?pageSize=${pageSize}&pageNumber=${page + 1}&criteria=${JSON.stringify(filter)}`, config).then(res => {
             if (!res.ok) {
                 navigate("/")
             }
