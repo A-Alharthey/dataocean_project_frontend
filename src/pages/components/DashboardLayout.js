@@ -23,7 +23,7 @@ function DashboardLayout() {
             <AppBar position="fixed" sx={{ borderRadius: "0px", bgcolor: "#1c2025", zIndex: "1300" }}>
                 <Toolbar>
                     <a href="/">
-                        <img src="/logo.png" />
+                        <img src="./logo.png" />
                     </a>
                     <Box sx={{ flexGrow: "1" }} />
                     <IconButton>
