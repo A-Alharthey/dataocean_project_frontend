@@ -24,7 +24,7 @@ function SignIn() {
       }
     }
     setIsLoading(true)
-    fetch("http://92.205.234.30:7071/api/Login",config).then((res)=>res.json()).then((data)=>{
+    fetch("https://cors-anywhere.herokuapp.com/http://92.205.234.30:7071/api/Login",config).then((res)=>res.json()).then((data)=>{
       window.localStorage.setItem("token",data.token)
       navigate("/dashboard")
     }).catch((e)=>alert("something went wrong!")).finally(()=>setIsLoading(false))
